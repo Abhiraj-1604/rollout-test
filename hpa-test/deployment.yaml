@@ -2,7 +2,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: b2b-aggregation
-  namespace: www-test
 spec:
   strategy:
     canary:                      # You can change to 'blueGreen' if needed
