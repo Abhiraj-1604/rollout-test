@@ -1,0 +1,87 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: b2b-aggregation
+  namespace: www-test
+spec:
+  strategy:
+    canary:                      # You can change to 'blueGreen' if needed
+      steps: []
+  selector:
+    matchLabels:
+      app: b2b-aggregation
+  template:
+    metadata:
+      labels:
+        app: b2b-aggregation
+    spec:
+      containers:
+      - name: b2b-aggregation
+        image: nginx:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        env:
+        - name: ENV_NAME
+          value: default
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.hostIP
+        - name: DOGSTATSD_HOST_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.hostIP
+        - name: DD_ENTITY_ID
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.uid
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /company/ping
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 190
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /company/ping
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 170
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: 509m
+            memory: 900Mi
+          requests:
+            cpu: 400m
+            memory: 700Mi
+      nodeSelector:
+        node-pool: www-test
+      volumes: []
