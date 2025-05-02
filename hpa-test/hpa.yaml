@@ -2,7 +2,6 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: b2b-aggregation-hpa
-  namespace: www-test
 spec:
   scaleTargetRef:
     apiVersion: argoproj.io/v1alpha1
