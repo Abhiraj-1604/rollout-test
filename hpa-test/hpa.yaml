@@ -7,7 +7,7 @@ spec:
     apiVersion: argoproj.io/v1alpha1
     kind: Rollout
     name: b2b-aggregation
-  minReplicas: 2
+  minReplicas: 3
   maxReplicas: 10
   metrics:
   - type: Resource
