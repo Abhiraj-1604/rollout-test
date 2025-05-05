@@ -2,8 +2,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: b2b-aggregation
-spec:
-  Replicas: 1
   strategy:
     canary:                      # You can change to 'blueGreen' if needed
       steps: []
